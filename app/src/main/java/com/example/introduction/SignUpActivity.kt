@@ -55,6 +55,7 @@ class SignUpActivity : AppCompatActivity() {
                     inputEmail.visibility = View.VISIBLE
                     inputEmail.requestFocus()
                     inputEmail.setText(null)
+                    inputEmail.setHint("email.com")
                     emailSpinner.visibility = View.INVISIBLE
                 }
             }
@@ -71,9 +72,11 @@ class SignUpActivity : AppCompatActivity() {
                 if (inputEmail.text.isEmpty()) {
                     inputEmail.error = "올바른 이메일을 입력해주세요."
                     emailSpinner.visibility = View.VISIBLE
+                    inputEmail.setHint(null)
                 } else {
                     inputEmail.error = null
                     emailSpinner.visibility = View.INVISIBLE
+                    inputEmail.setHint("email.com")
                 }
             }
         }
@@ -91,7 +94,7 @@ class SignUpActivity : AppCompatActivity() {
                 else if (inputId.text.toString().length !in 2..8) inputId.error = "ID는 2~8글자여야 합니다"
                 else if (inputId.text.toString()
                         .matches(Regex(".*[!@#$%^&*()_+].*"))
-                ) inputName.error = "ID에 특수문자를 쓸수 없습니다"
+                ) inputId.error = "ID에 특수문자를 쓸수 없습니다"
                 else if (userList.any { it.id == inputId.text.toString() }) inputId.error =
                     "이미 사용 중인 ID입니다"
                 else inputId.error = null

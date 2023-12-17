@@ -63,7 +63,7 @@ class HomeActivity : AppCompatActivity() {
         val userName = findViewById<TextView>(R.id.user_name)
         val userAge = findViewById<TextView>(R.id.user_age)
         val userMBTI = findViewById<TextView>(R.id.user_mbti)
-        val random = ThreadLocalRandom.current().nextInt(1, 5)
+        val random = ThreadLocalRandom.current().nextInt(1, 6)
 
         when (random) {
             1 -> img.setImageResource(R.drawable.danger)
@@ -80,7 +80,5 @@ class HomeActivity : AppCompatActivity() {
         userMBTI.setText("MBTI: ${mbti}")
         introduce.setText("${intro}")
     }
-
-
 
 }
