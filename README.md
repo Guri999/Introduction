@@ -52,8 +52,7 @@ signUpButton.setOnClickListener {
 
 ## SignUpActivity
 
-![image](https://github.com/Guri999/Introduction/assets/116724657/6c6a9161-34a5-479d-ab1d-e590bb51a363
-
+![](https://github-production-user-asset-6210df.s3.amazonaws.com/116724657/291019121-6c6a9161-34a5-479d-ab1d-e590bb51a363.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20231217%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20231217T001554Z&X-Amz-Expires=300&X-Amz-Signature=3993d2a8a9389e01a63401709a8b30fe757dbffb76894b0dcc023375f6d66490&X-Amz-SignedHeaders=host&actor_id=116724657&key_id=0&repo_id=732505831)
 ### TextWatcher
 ```kotlin
 val watcher = object : TextWatcher {
