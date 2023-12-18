@@ -111,19 +111,19 @@ class profileActivity : AppCompatActivity() {
             maxValue = yearList.size - 1
             wrapSelectorWheel = false
             displayedValues = yearList.toTypedArray()
-            value = yearList.indexOf(npRange?.get(0) ?: "1980")
+            value = yearList.indexOf(npRange?.getOrNull(0) ?: "1980")
         }
         npMonth.run {
             minValue = 0
             maxValue = monthList.size - 1
             displayedValues = monthList.toTypedArray()
-            value = yearList.indexOf(npRange?.get(1) ?: "0")
+            value = monthList.indexOf(npRange?.getOrNull(1) ?: "0")
         }
         npDay.run {
             minValue = 0
             maxValue = dateList.size - 1
             displayedValues = dateList.toTypedArray()
-            value = yearList.indexOf(npRange?.get(2) ?: "0")
+            value = dateList.indexOf(npRange?.getOrNull(2) ?: "0")
         }
     }
 
