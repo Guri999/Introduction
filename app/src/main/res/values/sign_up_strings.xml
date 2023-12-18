@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_name">이름</string>
+    <string name="sign_name_error">이름을 입력하세요.</string>
+    <string name="sign_id">ID</string>
+    <string name="sign_id_error">ID를 입력하세요.</string>
+    <string name="sign_email">이메일</string>
+    <string name="sign_email_address">email.com</string>
+    <string name="sign_email_address_error">이메일을 입력해주세요.</string>
+    <string name="sign_email_address_error_special">올바른 이메일 형식이 아닙니다.</string>
+    <string name="sign_password">비밀번호</string>
+    <string name="sign_password_error">비밀번호를 입력하세요.</string>
+    <string name="sign_password_error_limit">대문자,특수문자를 포함 10~16글자</string>
+    <string name="sign_password_check">비밀번호 확인</string>
+    <string name="sign_up">회원가입</string>
+    <string name="name_error_special">이름에 특수문자를 쓸수 없습니다</string>
+    <string name="id_error_special">ID에 특수문자를 쓸수 없습니다</string>
+    <string name="id_error_length">ID는 2~8글자여야 합니다</string>
+    <string name="id_error_use">이미 사용 중인 ID입니다</string>
+    <string name="password_error_length">10~16자여야 합니다</string>
+    <string name="error_special_one">특수문자가 하나 이상 들어가야합니다</string>
+    <string name="error_upper_one">대문자가 하나 이상 들어가야합니다</string>
+    <string name="signe_password_error_nocoincide">비밀번호와 다릅니다</string>
+    <string name="naver">naver.com</string>
+    <string name="gmail">gmail.com</string>
+    <string name="kakao">kakao.com</string>
+    <string name="selfaddress">직접입력</string>
+</resources>
