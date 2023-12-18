@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:text="이름"
+            android:text="@string/sign_name"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:hint="이름을 입력하세요."
+            android:hint="@string/sign_name_error"
             android:textColor="#939393" />
 
 
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
-            android:text="아이디"
+            android:text="@string/sign_id"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -53,7 +53,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:hint="아이디를 입력하세요."
+            android:hint="@string/sign_id"
             android:textColor="#939393" />
 
         <TextView
@@ -61,59 +61,56 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
-            android:text="이메일"
+            android:text="@string/sign_email"
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
         <EditText
             android:id="@+id/input_email_id"
-            android:layout_width="150dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:hint="ID"
+            android:hint="@string/sign_id"
             android:layout_weight = "1"
             android:textColor="#939393" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:layout_marginTop="15dp"
                 android:layout_toStartOf="@+id/input_email"
                 android:text="\@"/>
 
             <EditText
                 android:id="@+id/input_email"
-                android:layout_width="150dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"
                 android:layout_marginRight="20dp"
                 android:layout_toEndOf="@+id/input_email_id"
-                android:hint="email.com"
+                android:hint="@string/sign_email_address"
                 android:layout_weight = "1"
                 android:textColor="#939393" />
 
             <Spinner
                 android:id="@+id/email_spinner"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_alignStart="@+id/input_email"
                 android:layout_alignEnd="@+id/input_email"
                 android:layout_alignParentTop="@+id/input_email"
                 android:layout_alignParentBottom="@+id/input_email"/>
-        </RelativeLayout>>
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
-            android:text="비밀번호"
+            android:text="@string/sign_password"
             android:textSize="20sp"
             android:textStyle="bold" />
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -124,7 +121,7 @@
         android:id="@+id/input_pass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="비밀번호를 입력하세요."
+        android:hint="@string/sign_password_error"
         android:inputType="textPassword"
         android:textColor="#939393"
         android:layout_marginLeft="20dp"
@@ -137,7 +134,7 @@
         android:id="@+id/pass_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="대문자,특수문자를 포함 10~16글자"
+        android:text="@string/sign_password_error_limit"
         android:textColor="@color/gray"
         android:layout_marginTop="-5dp"
         android:textSize="12dp"
@@ -149,7 +146,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
-            android:text="비밀번호 확인"
+            android:text="@string/sign_password_check"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -159,7 +156,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:hint="비밀번호를 입력하세요."
+            android:hint="@string/sign_password_error"
             android:inputType="textPassword"
             android:textColor="#939393" />
 
@@ -170,6 +167,6 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="40dp"
             android:layout_marginRight="20dp"
-            android:text="회원가입" />
+            android:text="@string/sign_up" />
     </LinearLayout>
 </ScrollView>

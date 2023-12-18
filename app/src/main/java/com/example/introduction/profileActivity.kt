@@ -16,61 +16,120 @@ import android.widget.Spinner
 import java.time.LocalDate
 
 class profileActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
-
-        val yearList = (1950..2023).toList().map { it.toString() }
-        val monthList = (1..12).toList().map { it.toString() }
-        val dateList = (1..31).toList().map { it.toString() }
-
-        val mbtiList = arrayListOf(
+    private val mbtiList: ArrayList<String> by lazy{
+        arrayListOf(
             "ENFJ", "ENFP", "ENTJ", "ENTP",
             "ESFJ", "ESFP", "ESTJ", "ESTP",
             "INFJ", "INFP", "INTJ", "INTP",
             "ISFJ", "ISFP", "ISTJ", "ISTP"
         )
+    }
 
-        val userList: ArrayList<User> = UserList.userList
-        val id = intent.getStringExtra("editId")
-        var name = userList.find { it.id == id }?.name
-        var birth = userList.find { it.id == id }?.birth
-        var mbti = userList.find { it.id == id }?.mbti
-        var intro = userList.find { it.id == id }?.introduce
-        val inputName = findViewById<EditText>(R.id.input_name)
-        val inputMbti = findViewById<Spinner>(R.id.input_mbti)
-        inputMbti.adapter = ArrayAdapter(this,android.R.layout.simple_spinner_item, mbtiList)
-        val inputIntro = findViewById<EditText>(R.id.input_introduce)
-        val npYear = findViewById<NumberPicker>(R.id.npYear)
-        val npMonth = findViewById<NumberPicker>(R.id.npMonth)
-        val npDay = findViewById<NumberPicker>(R.id.npDay)
-        val btnBack = findViewById<Button>(R.id.btn_back)
-        val btnEdit = findViewById<Button>(R.id.btn_edit)
+    private val yearList: ArrayList<String> by lazy {
+        (1950..2023).toList().map { it.toString() } as ArrayList<String>
+    }
+
+    private val monthList: ArrayList<String> by lazy {
+        (1..12).toList().map { it.toString() } as ArrayList<String>
+    }
+
+    private val dateList: ArrayList<String> by lazy {
+        (1..31).toList().map { it.toString() } as ArrayList<String>
+        }
+
+    private  val userList: ArrayList<User> by lazy {
+        UserList.userList
+    }
+
+    private val id: String by lazy {
+        intent.getStringExtra("editId").toString()
+    }
+
+    private val inputName: EditText by lazy {
+        findViewById(R.id.input_name)
+    }
+    private val inputMbti: Spinner by lazy {
+        findViewById(R.id.input_mbti)
+    }
+    private val inputIntro: EditText by lazy {
+        findViewById(R.id.input_introduce)
+    }
+    private val npYear: NumberPicker by lazy {
+        findViewById(R.id.npYear)
+    }
+    private val npMonth: NumberPicker by lazy {
+        findViewById(R.id.npMonth)
+    }
+    private val npDay: NumberPicker by lazy {
+        findViewById(R.id.npDay)
+    }
+    private val btnBack: Button by lazy {
+        findViewById(R.id.btn_back)
+    }
+
+    private val btnEdit: Button by lazy {
+        findViewById<Button>(R.id.btn_edit)
+    }
+    private lateinit var name: String
+    private lateinit var birth: String
+    private lateinit var mbti: String
+    private lateinit var intro: String
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_profile)
+
+        init()
+    }
+
+    private fun init() {
+        setSaveUserData()
+
+        setEditButton()
+    }
+
+    private fun setSaveUserData() {
+        userList
+        name = userList.find { it.id == id }?.name.toString()
+        birth = userList.find { it.id == id }?.birth.toString()
+        mbti = userList.find { it.id == id }?.mbti.toString()
+        intro = userList.find { it.id == id }?.introduce.toString()
+
         inputName.setText("${name}")
         inputIntro.setText("${intro}")
 
+        //NumberPicker
+        setBirthProvider()
+
+        //MBTI Spinner
+        setItemSelectedListener()
+    }
+    private fun setBirthProvider () {
         val npRange = birth?.split("-")
+
         npYear.run {
             minValue = 0
             maxValue = yearList.size - 1
             wrapSelectorWheel = false
             displayedValues = yearList.toTypedArray()
-            value = yearList.indexOf(npRange?.get(0) ?: "1950")
+            value = yearList.indexOf(npRange?.get(0) ?: "1980")
         }
         npMonth.run {
             minValue = 0
             maxValue = monthList.size - 1
             displayedValues = monthList.toTypedArray()
-            value = yearList.indexOf(npRange?.get(1) ?: "1")
+            value = yearList.indexOf(npRange?.get(1) ?: "0")
         }
         npDay.run {
             minValue = 0
             maxValue = dateList.size - 1
             displayedValues = dateList.toTypedArray()
-            value = yearList.indexOf(npRange?.get(2) ?: "1")
+            value = yearList.indexOf(npRange?.get(2) ?: "0")
         }
+    }
 
-        inputMbti.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+    private fun setItemSelectedListener() {
+        inputMbti.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, mbtiList)
+        inputMbti.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
@@ -80,15 +139,12 @@ class profileActivity : AppCompatActivity() {
                 mbti = mbtiList[position]
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                if (mbti != null) inputMbti.setSelection(mbtiList.indexOf(mbti))
-                else inputMbti.setSelection(0)
-            }
-
+            override fun onNothingSelected(parent: AdapterView<*>?) = Unit
         }
+    }
 
+    private fun setEditButton(){
         btnEdit.setOnClickListener {
-
             UserList.userList.find { it.id == id }?.let {
                 it.name = inputName.text.toString()
                 it.age = LocalDate.now().year - yearList[npYear.value].toInt() + 1
