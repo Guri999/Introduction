@@ -49,10 +49,12 @@ class SignUpActivity : AppCompatActivity() {
         findViewById(R.id.pass_text)
     }
     private val emails: Array<String> by lazy {
-        arrayOf(getString(R.string.naver),
+        arrayOf(
+            getString(R.string.naver),
             getString(R.string.gmail),
             getString(R.string.kakao),
-            getString(R.string.selfaddress))
+            getString(R.string.selfaddress)
+        )
     }
     private lateinit var name: String
     private lateinit var id: String
@@ -96,9 +98,11 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun setServiceProvider() {
         /*이메일 주소 스피너*/
-        emailSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, emails)
+        emailSpinner.adapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, emails)
         emailSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -114,6 +118,7 @@ class SignUpActivity : AppCompatActivity() {
                     inputEmail.setText(null)
                 }
             }
+
             override fun onNothingSelected(parent: AdapterView<*>?) = Unit
         }
     }
@@ -135,15 +140,18 @@ class SignUpActivity : AppCompatActivity() {
             inputId -> error = getMessageErrorId()
             inputEmail -> error = getMessageErrorEmail()
             inputEmailId -> error = getMessageErrorEmailId()
-            inputPassword -> error = getMessageErrorPassword()
-            inputPasswordCheck -> {
-                error = getMessageErrorPasswordCheck()
+            inputPassword -> {
+                error = getMessageErrorPassword()
                 if (inputPassword.text.isEmpty()) passText.visibility = View.VISIBLE
                 else passText.visibility = View.INVISIBLE
             }
+
+            inputPasswordCheck -> error = getMessageErrorPasswordCheck()
+
             else -> Unit
         }
     }
+
     private fun getMessageErrorName(): String? {
         return if (inputName.text.isEmpty()) getString(R.string.sign_id_error)
         else if (inputName.text.toString().matches(Regex(".*[!@#$%^&*()_+].*"))
@@ -185,6 +193,7 @@ class SignUpActivity : AppCompatActivity() {
 
             inputPassword.text.toString().find { it in 'A'..'Z' } == null
             -> getString(R.string.error_upper_one)
+
             else -> null
         }
     }
@@ -204,7 +213,8 @@ class SignUpActivity : AppCompatActivity() {
                 && getMessageErrorPasswordCheck() == null
         setSignButtonSendData()
     }
-private  fun setSignButtonSendData() {
+
+    private fun setSignButtonSendData() {
         signBtn.setOnClickListener {
 
             name = inputName.getText().toString()

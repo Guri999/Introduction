@@ -16,7 +16,7 @@ import android.widget.Spinner
 import java.time.LocalDate
 
 class profileActivity : AppCompatActivity() {
-    private val mbtiList: ArrayList<String> by lazy{
+    private val mbtiList: ArrayList<String> by lazy {
         arrayListOf(
             "ENFJ", "ENFP", "ENTJ", "ENTP",
             "ESFJ", "ESFP", "ESTJ", "ESTP",
@@ -35,9 +35,9 @@ class profileActivity : AppCompatActivity() {
 
     private val dateList: ArrayList<String> by lazy {
         (1..31).toList().map { it.toString() } as ArrayList<String>
-        }
+    }
 
-    private  val userList: ArrayList<User> by lazy {
+    private val userList: ArrayList<User> by lazy {
         UserList.userList
     }
 
@@ -103,7 +103,8 @@ class profileActivity : AppCompatActivity() {
         //MBTI Spinner
         setItemSelectedListener()
     }
-    private fun setBirthProvider () {
+
+    private fun setBirthProvider() {
         val npRange = birth?.split("-")
 
         npYear.run {
@@ -143,14 +144,15 @@ class profileActivity : AppCompatActivity() {
         }
     }
 
-    private fun setEditButton(){
+    private fun setEditButton() {
         btnEdit.setOnClickListener {
             UserList.userList.find { it.id == id }?.let {
                 it.name = inputName.text.toString()
                 it.age = LocalDate.now().year - yearList[npYear.value].toInt() + 1
                 it.introduce = inputIntro.text.toString()
                 it.mbti = mbti
-                it.birth = "${yearList[npYear.value]}-${monthList[npMonth.value]}-${dateList[npDay.value]}"
+                it.birth =
+                    "${yearList[npYear.value]}-${monthList[npMonth.value]}-${dateList[npDay.value]}"
             }
             val intent = Intent(this, HomeActivity::class.java)
             setResult(Activity.RESULT_OK, null)

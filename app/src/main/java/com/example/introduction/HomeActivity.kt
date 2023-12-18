@@ -17,9 +17,10 @@ import kotlin.random.Random
 
 class HomeActivity : AppCompatActivity() {
 
-    private val profileRefresh = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-        if(result.resultCode == Activity.RESULT_OK ) init()
-    }
+    private val profileRefresh =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) init()
+        }
 
     private val quit: Button by lazy {
         findViewById(R.id.btn_quit)
@@ -36,7 +37,6 @@ class HomeActivity : AppCompatActivity() {
     private val userList: ArrayList<User> by lazy {
         UserList.userList
     }
-
 
 
     private val email: String by lazy {
@@ -82,6 +82,7 @@ class HomeActivity : AppCompatActivity() {
     private val random: Int by lazy {
         ThreadLocalRandom.current().nextInt(1, 6)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -96,6 +97,7 @@ class HomeActivity : AppCompatActivity() {
 
         setHomeButton()
     }
+
     private fun setUserData() {
         name = userList.find { it.id == id }!!.name
         age = userList.find { it.id == id }?.age
