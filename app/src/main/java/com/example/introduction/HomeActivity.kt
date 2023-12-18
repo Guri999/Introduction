@@ -17,26 +17,100 @@ import kotlin.random.Random
 
 class HomeActivity : AppCompatActivity() {
 
-    val profileRefresh = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-        if(result.resultCode == Activity.RESULT_OK ) dataLoad()
+    private val profileRefresh = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+        if(result.resultCode == Activity.RESULT_OK ) init()
+    }
+
+    private val quit: Button by lazy {
+        findViewById(R.id.btn_quit)
+    }
+
+    private val editProfile: ImageButton by lazy {
+        findViewById(R.id.edit_profile)
+    }
+
+    private val id: String? by lazy {
+        intent.getStringExtra("id")
+    }
+
+    private val userList: ArrayList<User> by lazy {
+        UserList.userList
+    }
+
+
+
+    private val email: String by lazy {
+        userList.find { it.id == id }!!.email
+    }
+
+    private lateinit var name: String
+
+    private var age: Int? = null
+
+    private var mbti: String? = null
+
+    private var intro: String? = null
+
+    private val introduce: TextView by lazy {
+        findViewById(R.id.introduce)
+    }
+
+    private val img: ImageView by lazy {
+        findViewById(R.id.random_img)
+    }
+
+    private val userEmail: TextView by lazy {
+        findViewById(R.id.user_email)
+    }
+
+    private val userId: TextView by lazy {
+        findViewById(R.id.user_id)
+    }
+
+    private val userName: TextView by lazy {
+        findViewById(R.id.user_name)
+    }
+
+    private val userAge: TextView by lazy {
+        findViewById(R.id.user_age)
+    }
+
+    private val userMBTI: TextView by lazy {
+        findViewById(R.id.user_mbti)
+    }
+
+    private val random: Int by lazy {
+        ThreadLocalRandom.current().nextInt(1, 6)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        val swipe: SwipeRefreshLayout = findViewById(R.id.swipe)
-        val quit = findViewById<Button>(R.id.btn_quit)
-        val btnMbti = findViewById<Button>(R.id.btn_mbti)
-        val editProfile = findViewById<ImageButton>(R.id.edit_profile)
-        val id = intent.getStringExtra("id")
+        init()
+    }
 
-        dataLoad()
+    private fun init() {
+        setUserData()
 
-        swipe.setOnRefreshListener {
-            dataLoad()
-            swipe.isRefreshing = false
-        }
-        btnMbti.isEnabled = false
+        setRandomImg()
+
+        setHomeButton()
+    }
+    private fun setUserData() {
+        name = userList.find { it.id == id }!!.name
+        age = userList.find { it.id == id }?.age
+        mbti = userList.find { it.id == id }?.mbti
+        intro = userList.find { it.id == id }?.introduce
+
+        userEmail.setText("${email}")
+        userId.setText("ID: ${id}")
+        userName.setText("이름: ${name}")
+        userAge.setText("나이: ${age}")
+        userMBTI.setText("MBTI: ${mbti}")
+        introduce.setText("${intro}")
+    }
+
+    private fun setHomeButton() {
         editProfile.setOnClickListener {
             val intent = Intent(this, profileActivity::class.java)
             intent.putExtra("editId", id)
@@ -48,22 +122,7 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    fun dataLoad() {
-        val userList: ArrayList<User> = UserList.userList
-        val id = intent.getStringExtra("id")
-        val name = userList.find { it.id == id }!!.name
-        val email = userList.find { it.id == id }!!.email
-        val age = userList.find { it.id == id }?.age
-        val mbti = userList.find { it.id == id }?.mbti
-        val intro = userList.find { it.id == id }?.introduce
-        val introduce = findViewById<TextView>(R.id.introduce)
-        val img = findViewById<ImageView>(R.id.random_img)
-        val userEmail = findViewById<TextView>(R.id.user_email)
-        val userId = findViewById<TextView>(R.id.user_id)
-        val userName = findViewById<TextView>(R.id.user_name)
-        val userAge = findViewById<TextView>(R.id.user_age)
-        val userMBTI = findViewById<TextView>(R.id.user_mbti)
-        val random = ThreadLocalRandom.current().nextInt(1, 6)
+    private fun setRandomImg() {
 
         when (random) {
             1 -> img.setImageResource(R.drawable.danger)
@@ -72,13 +131,7 @@ class HomeActivity : AppCompatActivity() {
             4 -> img.setImageResource(R.drawable.pikicast285983125)
             5 -> img.setImageResource(R.drawable.pxfuel)
         }
-
-        userEmail.setText("${email}")
-        userId.setText("ID: ${id}")
-        userName.setText("이름: ${name}")
-        userAge.setText("나이: ${age}")
-        userMBTI.setText("MBTI: ${mbti}")
-        introduce.setText("${intro}")
     }
+
 
 }
