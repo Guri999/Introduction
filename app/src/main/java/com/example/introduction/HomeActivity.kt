@@ -104,10 +104,10 @@ class HomeActivity : AppCompatActivity() {
         intro = userList.find { it.id == id }?.introduce
 
         userEmail.setText("${email}")
-        userId.setText("ID: ${id}")
-        userName.setText("이름: ${name}")
-        userAge.setText("나이: ${age}")
-        userMBTI.setText("MBTI: ${mbti}")
+        userId.setText("${getString(R.string.home_id)} ${id}")
+        userName.setText("${getString(R.string.home_name)} ${name}")
+        userAge.setText("${getString(R.string.home_age)} ${age}")
+        userMBTI.setText("${getString(R.string.home_mbti)} ${mbti}")
         introduce.setText("${intro}")
     }
 
