@@ -18,7 +18,7 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var userList: ArrayList<User>
 
     private val inputName: EditText by lazy {
-        findViewById<EditText>(R.id.input_name)
+        findViewById(R.id.input_name)
     }
 
     private val inputId: EditText by lazy {
@@ -233,7 +233,8 @@ class SignUpActivity : AppCompatActivity() {
                 putExtra("password", password)
             }
             setResult(RESULT_OK, sendData)
-            finish()
+
+            if(!isFinishing) finish()
         }
     }
 }

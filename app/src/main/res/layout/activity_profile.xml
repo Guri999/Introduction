@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="50dp"
-        android:text="이름"
+        android:text="@string/sign_name"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:hint="표시 되는 이름입니다."
+        android:hint="@string/profile_name_empty"
         android:textColor="#939393" />
 
     <TextView
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
-        android:text="출생년도"
+        android:text="@string/profile_birth"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:text="년"
+            android:text="@string/profile_year"
             app:layout_constraintBottom_toBottomOf="@+id/npYear"
             app:layout_constraintStart_toEndOf="@+id/npYear"
             app:layout_constraintTop_toTopOf="@+id/npYear" />
@@ -69,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:text="월"
+            android:text="@string/profile_month"
             app:layout_constraintBottom_toBottomOf="@+id/npMonth"
             app:layout_constraintStart_toEndOf="@+id/npMonth"
             app:layout_constraintTop_toTopOf="@+id/npMonth" />
@@ -85,7 +85,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="일"
+            android:text="@string/profile_date"
             android:layout_marginLeft="20dp"
             app:layout_constraintBottom_toBottomOf="@+id/npDay"
             app:layout_constraintStart_toEndOf="@+id/npDay"
@@ -97,7 +97,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:text="MBTI"
+        android:text="@string/profile_mbti"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -114,7 +114,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:text="소개"
+        android:text="@string/profile_introduce"
         android:layout_marginTop="10dp"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -125,7 +125,7 @@
         android:layout_height="100dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:hint="내용을 입력하세요."
+        android:hint="@string/profile_empty"
         android:textColor="#939393" />
 
     <LinearLayout
@@ -139,7 +139,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:text="수정하기" />
+        android:text="@string/profile_edit" />
 
     <Button
         android:id="@+id/btn_back"
@@ -147,5 +147,5 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:text="돌아가기" />
+        android:text="@string/profile_quit" />
 </LinearLayout>

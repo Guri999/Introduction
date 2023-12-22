@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <ImageView
@@ -23,8 +23,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="아이디"
+            android:layout_marginStart="20dp"
+            android:text="@string/sign_in_id_kor"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -35,14 +35,14 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:hint="아이디를 입력하세요."
+            android:hint="@string/sign_id_kor_empty"
             android:textColor="#939393" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="비밀번호"
+            android:layout_marginStart="20dp"
+            android:text="@string/sign_in_password_kor"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:hint="비밀번호를 입력하세요."
+            android:hint="@string/signin_pass_empty"
             android:inputType="textPassword"
             android:textColor="#939393" />
 
@@ -63,7 +63,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="40dp"
             android:layout_marginRight="20dp"
-            android:text="로그인" />
+            android:text="@string/sign_in_login" />
 
         <Button
             android:id="@+id/btn_create_account"
@@ -72,6 +72,6 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
-            android:text="회원가입" />
+            android:text="@string/sign_in_membership" />
     </LinearLayout>
 </ScrollView>

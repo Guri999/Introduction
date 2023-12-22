@@ -4,12 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Layout
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.introduction.R
 import java.util.concurrent.ThreadLocalRandom
@@ -22,7 +25,7 @@ class HomeActivity : AppCompatActivity() {
             if (result.resultCode == Activity.RESULT_OK) init()
         }
 
-    private val quit: Button by lazy {
+    private val quit: ConstraintLayout by lazy {
         findViewById(R.id.btn_quit)
     }
 
@@ -79,10 +82,6 @@ class HomeActivity : AppCompatActivity() {
         findViewById(R.id.user_mbti)
     }
 
-    private val random: Int by lazy {
-        ThreadLocalRandom.current().nextInt(1, 6)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -126,13 +125,16 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setRandomImg() {
 
-        when (random) {
-            1 -> img.setImageResource(R.drawable.danger)
-            2 -> img.setImageResource(R.drawable.dogsound)
-            3 -> img.setImageResource(R.drawable.doolyswelcome)
-            4 -> img.setImageResource(R.drawable.pikicast285983125)
-            5 -> img.setImageResource(R.drawable.pxfuel)
+        val imgId = when ((1..5).random()) {
+            1 -> R.drawable.danger
+            2 -> R.drawable.dogsound
+            3 -> R.drawable.doolyswelcome
+            4 -> R.drawable.pikicast285983125
+            5 -> R.drawable.pxfuel
+            else -> R.drawable.danger
         }
+
+        img.setImageDrawable(ResourcesCompat.getDrawable(resources, imgId, null))
     }
 
 

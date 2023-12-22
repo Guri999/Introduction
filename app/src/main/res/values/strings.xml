@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">Introduction</string>
+    <string name="sign_in_id_kor">아이디</string>
+    <string name="sign_id_kor_empty">아이디를 입력하세요.</string>
+    <string name="sign_in_password_kor">비밀번호</string>
+    <string name="signin_pass_empty">비밀번호를 입력하세요.</string>
+    <string name="sign_in_login">로그인</string>
+    <string name="sign_in_membership">회원가입</string>
+    <string name="home_id">아이디:</string>
+    <string name="home_name">이름:</string>
+    <string name="home_age">나이:</string>
+    <string name="home_mbti">MBTI:</string>
+    <string name="home_edit_profile">프로필수정</string>
+    <string name="home_feel">상태</string>
+    <string name="home_end">종료</string>
+    <string name="profile_name_empty">이름을 적어주세요.</string>
+    <string name="profile_birth">출생년도</string>
+    <string name="profile_year">년</string>
+    <string name="profile_month">월</string>
+    <string name="profile_date">일</string>
+    <string name="profile_mbti">MBTI</string>
+    <string name="profile_introduce">소개</string>
+    <string name="profile_empty">내용을 입력하세요.</string>
+    <string name="profile_edit">수정하기</string>
+    <string name="profile_quit">돌아가기</string>
 </resources>

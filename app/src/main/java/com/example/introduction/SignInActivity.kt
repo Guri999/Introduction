@@ -58,16 +58,17 @@ class SignInActivity : AppCompatActivity() {
         signInButton.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)
 
-            if (UserList.userList.none { it.id == idChk.text.toString() }
-            ) Toast.makeText(this, getString(R.string.no_one_user_list), Toast.LENGTH_SHORT).show()
+            if (UserList.userList.none { it.id == idChk.text.toString() }){
+                Toast.makeText(this, getString(R.string.no_one_user_list), Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             else if (UserList.userList.any { it.id == idChk.text.toString() && it.password == pasChk.text.toString() }) {
                 intent.putExtra("id", idChk.text.toString())
                 startActivity(intent)
-            } else Toast.makeText(
-                this,
-                getString(R.string.check_id_password_plz),
-                Toast.LENGTH_SHORT
-            ).show()
+            } else {
+                Toast.makeText(this, getString(R.string.check_id_password_plz),Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
         }
     }
 
