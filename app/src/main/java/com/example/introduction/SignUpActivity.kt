@@ -10,12 +10,15 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import kotlin.text.StringBuilder
+import com.example.introduction.SignUpValidExtension.validEmailServiceProvider
+import com.example.introduction.SignUpValidExtension.includeSpecialCharacters
+import com.example.introduction.SignUpValidExtension.includeUpperCase
 
 class SignUpActivity : AppCompatActivity() {
-
-    private lateinit var userList: ArrayList<User>
 
     private val inputName: EditText by lazy {
         findViewById(R.id.input_name)
@@ -41,9 +44,6 @@ class SignUpActivity : AppCompatActivity() {
     }
     private val signBtn: Button by lazy {
         findViewById(R.id.btn_sign)
-    }
-    private val emailRegex: Regex by lazy {
-        Regex("^[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")
     }
     private val passText: TextView by lazy {
         findViewById(R.id.pass_text)
@@ -71,6 +71,17 @@ class SignUpActivity : AppCompatActivity() {
             inputPasswordCheck
         )
 
+    private val idText: TextView by lazy {
+        findViewById(R.id.id_text)
+    }
+    private fun setEditCheck(){
+        if (intent.getStringExtra("editId") != null){
+            inputId.isVisible = false
+            idText.isVisible = false
+            id = intent.getStringExtra("editId")!!
+            signBtn.setText(R.string.profile_edit)
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
@@ -80,7 +91,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        userList = UserList.userList
+        setEditCheck()
 
         setTextChangedListener()
 
@@ -115,7 +126,7 @@ class SignUpActivity : AppCompatActivity() {
                     inputEmail.setText(emails[position])
                 } else {
                     inputEmail.visibility = View.VISIBLE
-                    inputEmail.setText(null)
+                    inputEmail.text = null
                 }
             }
 
@@ -153,54 +164,68 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun getMessageErrorName(): String? {
-        return if (inputName.text.isEmpty()) getString(R.string.sign_id_error)
-        else if (inputName.text.toString().matches(Regex(".*[!@#$%^&*()_+].*"))
-        ) getString(R.string.name_error_special)
-        else null
+        val text = inputName.text.toString()
+        val errorCode = when {
+            text.isEmpty() -> SignUpErrorMessage.NAME
+            text.includeSpecialCharacters() -> SignUpErrorMessage.NAMESPECIAL
+            else -> null
+        }
+        return errorCode?.let { getString(it.message) }
     }
 
+
     private fun getMessageErrorId(): String? {
-        return if (inputId.text.isEmpty()) getString(R.string.sign_id_error)
-        else if (inputId.text.toString().length !in 2..8)
-            getString(R.string.id_error_length)
-        else if (inputId.text.toString().matches(Regex(".*[!@#$%^&*()_+].*"))
-        ) getString(R.string.id_error_special)
-        else if (userList.any { it.id == inputId.text.toString() })
-            getString(R.string.id_error_use)
-        else null
+        val text = inputId.text.toString()
+        if (inputId.isVisible) {
+            val errorCode = when {
+                text.isEmpty() -> SignUpErrorMessage.ID
+                text.length !in 2..8 -> SignUpErrorMessage.IDLEGTH
+                text.includeSpecialCharacters() -> SignUpErrorMessage.IDSPECIAL
+                UserList.userList.any { it.id == inputId.text.toString() } -> SignUpErrorMessage.IDUSE
+                else -> null
+            }
+            return errorCode?.let { getString(it.message) }
+        }else return null
     }
 
     private fun getMessageErrorEmail(): String? {
-        return if (inputEmail.text.isEmpty()) getString(R.string.sign_email_address_error)
-        else if (inputEmail.text.toString().matches(emailRegex)) null
-        else getString(R.string.sign_email_address_error_special)
+        val text = inputEmail.text.toString()
+        val errorCode = when {
+            text.isEmpty() -> SignUpErrorMessage.EMAIL
+            !text.validEmailServiceProvider() -> SignUpErrorMessage.EMAILSPECIAL
+            else -> null
+        }
+        return errorCode?.let { getString(it.message) }
     }
 
     private fun getMessageErrorEmailId(): String? {
-        return if (inputEmailId.text.isEmpty()) getString(R.string.sign_id_error)
-        else if (inputEmailId.text.toString().matches(Regex(".*[!@#$%^&*()_+].*"))
-        ) getString(R.string.id_error_special)
-        else null
+        val text = inputEmailId.text.toString()
+        val errorCode = when {
+            text.isEmpty() -> SignUpErrorMessage.ID
+            text.includeSpecialCharacters() -> SignUpErrorMessage.IDSPECIAL
+            else -> null
+        }
+        return errorCode?.let { getString(it.message) }
     }
 
     private fun getMessageErrorPassword(): String? {
-        val specialCharacterRegex = Regex("[!@#\$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]+")
         val text = inputPassword.text.toString()
-        return when {
-            text.length !in 10..16 -> getString(R.string.password_error_length)
-            specialCharacterRegex.containsMatchIn(text)
-                .not() -> getString(R.string.error_special_one)
+        val errorCode = when {
+            text.length !in 10..16 -> SignUpErrorMessage.PASSWORDLEGTH
+            text.includeSpecialCharacters()
+                .not() -> SignUpErrorMessage.PASSWORDSPECIAL
 
-            inputPassword.text.toString().find { it in 'A'..'Z' } == null
-            -> getString(R.string.error_upper_one)
+            !text.includeUpperCase()
+            -> SignUpErrorMessage.UPPERONE
 
             else -> null
         }
+        return errorCode?.let { getString(it.message) }
     }
 
     private fun getMessageErrorPasswordCheck(): String? {
         return if (inputPasswordCheck.text.toString() != inputPassword.text.toString())
-            getString(R.string.signe_password_error_nocoincide)
+            getString(SignUpErrorMessage.PASSWORDNOCOINCIDE.message)
         else null
     }
 
@@ -216,25 +241,34 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun setSignButtonSendData() {
         signBtn.setOnClickListener {
-
-            name = inputName.getText().toString()
-            id = inputId.getText().toString()
-            password = inputPassword.getText().toString()
+            name = inputName.text.toString()
+            if (inputId.isVisible) id = inputId.text.toString()
+            password = inputPassword.text.toString()
             email = StringBuilder()
 
             email.append(inputEmailId.text)
             email.append("@")
             email.append(inputEmail.text)
-            user = User(name, id, password, email.toString(), null, null, "", null)
-            UserList.userList.add(user)
-            val intent = Intent(this, SignInActivity::class.java)
-            val sendData = intent.apply {
-                putExtra("id", id)
-                putExtra("password", password)
+            if (!inputId.isVisible) {
+                UserList.userList.find { it.id == id }?.let {
+                    it.name = name
+                    it.password = password
+                    it.email = email.toString()
+                }
+                setResult(RESULT_OK,null)
+                finish()
+            } else {
+                val newUser = User(name, id, password, email.toString())
+                UserList.userList.add(newUser)
+                val intent = Intent(this, SignInActivity::class.java)
+                val sendData = intent.apply {
+                    putExtra("id", id)
+                    putExtra("password", password)
+                }
+                setResult(RESULT_OK, sendData)
             }
-            setResult(RESULT_OK, sendData)
-
             if(!isFinishing) finish()
         }
     }
+
 }

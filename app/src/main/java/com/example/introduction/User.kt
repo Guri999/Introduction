@@ -6,12 +6,12 @@ import android.os.Parcelable
 data class User(
     var name: String,
     val id: String,
-    val password: String,
-    val email: String,
-    var mbti: String?,
-    var age: Int?,
-    var introduce: String?,
-    var birth: String?
+    var password: String,
+    var email: String,
+    var mbti: String? = null,
+    var age: Int? = null,
+    var introduce: String? = null,
+    var birth: String? = null
 )
 
 object UserList {

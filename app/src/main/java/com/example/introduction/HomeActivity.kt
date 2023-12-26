@@ -29,6 +29,10 @@ class HomeActivity : AppCompatActivity() {
         findViewById(R.id.btn_quit)
     }
 
+    private val editButton: Button by lazy {
+        findViewById(R.id.btn_edit2)
+    }
+
     private val editProfile: ImageButton by lazy {
         findViewById(R.id.edit_profile)
     }
@@ -42,9 +46,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
 
-    private val email: String by lazy {
-        userList.find { it.id == id }!!.email
-    }
+    private var email: String? = null
 
     private lateinit var name: String
 
@@ -95,6 +97,8 @@ class HomeActivity : AppCompatActivity() {
         setRandomImg()
 
         setHomeButton()
+
+        setEditButton()
     }
 
     private fun setUserData() {
@@ -102,6 +106,7 @@ class HomeActivity : AppCompatActivity() {
         age = userList.find { it.id == id }?.age
         mbti = userList.find { it.id == id }?.mbti
         intro = userList.find { it.id == id }?.introduce
+        email = userList.find { it.id == id }?.email
 
         userEmail.setText("${email}")
         userId.setText("${getString(R.string.home_id)} ${id}")
@@ -123,6 +128,13 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    private fun setEditButton(){
+        editButton.setOnClickListener {
+            val intent = Intent(this, SignUpActivity::class.java)
+            intent.putExtra("editId", id)
+            profileRefresh.launch(intent)
+        }
+    }
     private fun setRandomImg() {
 
         val imgId = when ((1..5).random()) {
