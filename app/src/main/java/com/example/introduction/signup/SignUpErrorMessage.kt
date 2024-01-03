@@ -1,6 +1,7 @@
-package com.example.introduction
+package com.example.introduction.signup
 
 import androidx.annotation.StringRes
+import com.example.introduction.R
 
 enum class SignUpErrorMessage(
     @StringRes val message: Int,
@@ -16,5 +17,5 @@ enum class SignUpErrorMessage(
     PASSWORDLEGTH(R.string.password_error_length),
     PASSWORDSPECIAL(R.string.error_special_one),
     UPPERONE(R.string.error_upper_one),
-    PASSWORDNOCOINCIDE(R.string.signe_password_error_nocoincide)
+    PASSWORDNOCOINCIDE(R.string.signe_password_error_nocoincide),
 }

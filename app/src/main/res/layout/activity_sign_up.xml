@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SignUpActivity">
+    tools:context=".signup.SignUpActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -69,12 +69,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
             android:orientation="horizontal">
         <EditText
             android:id="@+id/input_email_id"
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
             android:hint="@string/sign_id"
             android:layout_weight = "1"
             android:textColor="#939393" />
@@ -87,23 +88,18 @@
 
             <EditText
                 android:id="@+id/input_email"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="1dp"
-                android:layout_marginRight="20dp"
-                android:layout_toEndOf="@+id/input_email_id"
+                tools:visibility="visible"
                 android:hint="@string/sign_email_address"
                 android:layout_weight = "1"
                 android:textColor="#939393" />
 
             <Spinner
                 android:id="@+id/email_spinner"
-                android:layout_width="100dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/input_email"
-                android:layout_alignEnd="@+id/input_email"
-                android:layout_alignParentTop="@+id/input_email"
-                android:layout_alignParentBottom="@+id/input_email"/>
+                android:layout_weight="1"/>
         </LinearLayout>
 
         <TextView

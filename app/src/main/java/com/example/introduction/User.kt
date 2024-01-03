@@ -3,6 +3,7 @@ package com.example.introduction
 import android.os.Parcel
 import android.os.Parcelable
 
+
 data class User(
     var name: String,
     val id: String,

@@ -4,15 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Adapter
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.NumberPicker
 import android.widget.Spinner
+import com.example.introduction.user.HomeActivity
 import java.time.LocalDate
 
 class profileActivity : AppCompatActivity() {

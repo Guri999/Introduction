@@ -2,14 +2,14 @@ package com.example.introduction
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.ActivityResult
 import androidx.appcompat.app.AppCompatActivity
+import com.example.introduction.signup.SignUpActivity
+import com.example.introduction.user.HomeActivity
 
 class SignInActivity : AppCompatActivity() {
 

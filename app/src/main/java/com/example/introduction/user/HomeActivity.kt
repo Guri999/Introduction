@@ -1,22 +1,24 @@
-package com.example.introduction
+package com.example.introduction.user
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Layout
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.introduction.R
-import java.util.concurrent.ThreadLocalRandom
-import kotlin.random.Random
+import com.example.introduction.User
+import com.example.introduction.UserList
+import com.example.introduction.profileActivity
+import com.example.introduction.signup.SignUpActivity
+import com.example.introduction.signup.SignUpEntryType
+import com.example.introduction.signup.SignUpUserEntity
 
 class HomeActivity : AppCompatActivity() {
 
@@ -130,9 +132,19 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setEditButton(){
         editButton.setOnClickListener {
-            val intent = Intent(this, SignUpActivity::class.java)
-            intent.putExtra("editId", id)
-            profileRefresh.launch(intent)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                startActivity(
+                    SignUpActivity.newIntent(
+                        this@HomeActivity,
+                        SignUpEntryType.UPDATE,
+                        SignUpUserEntity(
+                            name,
+                            "smgs01",
+                            "gmail.com"
+                        )
+                    )
+                )
+            }
         }
     }
     private fun setRandomImg() {
