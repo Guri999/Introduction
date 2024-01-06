@@ -28,7 +28,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/input_name"
+            android:id="@+id/et_signup_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
@@ -38,7 +38,7 @@
 
 
         <TextView
-            android:id="@+id/id_text"
+            android:id="@+id/tv_signup_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -48,7 +48,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/input_id"
+            android:id="@+id/et_signup_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -73,7 +73,7 @@
             android:paddingEnd="24dp"
             android:orientation="horizontal">
         <EditText
-            android:id="@+id/input_email_id"
+            android:id="@+id/et_signup_eid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/sign_id"
@@ -87,7 +87,7 @@
                 android:text="\@"/>
 
             <EditText
-                android:id="@+id/input_email"
+                android:id="@+id/et_signup_eservice"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 tools:visibility="visible"
@@ -96,7 +96,7 @@
                 android:textColor="#939393" />
 
             <Spinner
-                android:id="@+id/email_spinner"
+                android:id="@+id/sp_signup_spin"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
@@ -115,7 +115,7 @@
     android:layout_height="wrap_content">
 
     <EditText
-        android:id="@+id/input_pass"
+        android:id="@+id/et_signup_pass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/sign_password_error"
@@ -128,15 +128,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/pass_text"
+        android:id="@+id/tv_signup_passempty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sign_password_error_limit"
         android:textColor="@color/gray"
         android:layout_marginTop="-5dp"
         android:textSize="12dp"
-        app:layout_constraintStart_toStartOf="@+id/input_pass"
-        app:layout_constraintTop_toBottomOf="@+id/input_pass" />
+        app:layout_constraintStart_toStartOf="@+id/et_signup_pass"
+        app:layout_constraintTop_toBottomOf="@+id/et_signup_pass" />
 </androidx.constraintlayout.widget.ConstraintLayout>
         <TextView
             android:layout_width="wrap_content"
@@ -148,7 +148,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/input_pass_check"
+            android:id="@+id/et_signup_passchk"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
@@ -158,7 +158,7 @@
             android:textColor="#939393" />
 
         <Button
-            android:id="@+id/btn_sign"
+            android:id="@+id/bt_signup_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"

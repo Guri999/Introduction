@@ -7,12 +7,17 @@ enum class SignUpEntryType {
     READ
     ;
 
+    /**
+     * getIntExtra로 정수타입으로 받아온
+     *
+     * 정보를 다시 EntryType으로 전환하자!
+     */
     companion object{
         fun  getEntryType(
-            ordinal: Int? // 널에이블로 선언
+            ordinal: Int?
         ): SignUpEntryType {
             return SignUpEntryType.values().firstOrNull(){
-                it.ordinal == ordinal //값이 없으면 널을 반환하고 CREATE
+                it.ordinal == ordinal
             } ?: CREATE
         }
     }

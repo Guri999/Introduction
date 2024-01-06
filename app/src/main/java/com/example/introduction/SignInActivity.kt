@@ -41,6 +41,10 @@ class SignInActivity : AppCompatActivity() {
         init()
     }
 
+    override fun onResume() {
+        super.onResume()
+        init()
+    }
     private fun init() {
         setSigUpUserData()
 
