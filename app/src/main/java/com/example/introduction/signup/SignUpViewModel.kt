@@ -1,15 +1,9 @@
 package com.example.introduction.signup
 
 import android.app.Application
-import android.util.Log
-import android.view.View
-import android.widget.EditText
-import androidx.core.content.res.TypedArrayUtils.getString
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.introduction.R
 import com.example.introduction.User
 import com.example.introduction.UserList
 import com.example.introduction.signup.SignUpValidExtension.validEmailServiceProvider
@@ -29,14 +23,6 @@ class SignUpViewModel (application: Application): AndroidViewModel(application) 
         return position != emails.lastIndex
     }
 
-    fun setUserEntity(entryType: SignUpEntryType, userEntity: SignUpUserEntity?) {
-        _entryType.value = entryType
-        when (entryType) {
-            SignUpEntryType.CREATE -> return
-            SignUpEntryType.UPDATE -> _userEntity.value = userEntity
-            else -> return
-        }
-    }
 
     fun sendData(name: String, id: String, emailId: String, emailService: String, password: String, idVisible: Boolean) {
         val email = "$emailId@$emailService"
@@ -61,24 +47,36 @@ class SignUpViewModel (application: Application): AndroidViewModel(application) 
             "Password" -> SignUpErrorMessage.PASSWORDLEGTH
             else -> null
         }
+        if (type == "Name" && text.includeSpecialCharacters()) return SignUpErrorMessage.NAMESPECIAL
 
-        if (type == "Id" || type == "Name" || type == "EmailId" && text.includeSpecialCharacters())
+        if (type == "Id" || type == "EmailId" && text.includeSpecialCharacters())
             return SignUpErrorMessage.IDSPECIAL
 
         return when (type) {
-            "Id" -> {
-                if (text.length !in 2..8) SignUpErrorMessage.IDLEGTH
-                else if (UserList.userList.any { it.id == text }) SignUpErrorMessage.IDUSE
-                else null
+            "Id" -> when {
+                text.length !in 2..8 -> SignUpErrorMessage.IDLEGTH
+                UserList.userList.any { it.id == text } -> SignUpErrorMessage.IDUSE
+                else -> null
             }
             "Email" -> if (!text.validEmailServiceProvider()) SignUpErrorMessage.EMAILSPECIAL else null
-            "Password" -> {
-                if (text.length !in 10..16) SignUpErrorMessage.PASSWORDLEGTH
-                else if (!text.includeSpecialCharacters()) SignUpErrorMessage.PASSWORDSPECIAL
-                else if (!text.includeUpperCase()) SignUpErrorMessage.UPPERONE
-                else null
+            "Password" -> when {
+                text.length !in 10..16 -> SignUpErrorMessage.PASSWORDLEGTH
+                !text.includeSpecialCharacters() -> SignUpErrorMessage.PASSWORDSPECIAL
+                !text.includeUpperCase() -> SignUpErrorMessage.UPPERONE
+                else -> null
             }
             else -> null
         }
+    }
+
+    fun getEntryData(entryType: SignUpEntryType, userEntity: SignUpUserEntity?){
+        _entryType.value = entryType
+        _userEntity.value = userEntity
+    }
+
+    fun setServiceIndex(service: String?, emails: Array<String>): Int {
+        return if (emails.any{ it == service}) {
+            emails.indexOf(emails.find { it == service })
+        }else emails.lastIndex
     }
 }

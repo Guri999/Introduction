@@ -132,19 +132,7 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setEditButton(){
         editButton.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                startActivity(
-                    SignUpActivity.newIntent(
-                        this@HomeActivity,
-                        SignUpEntryType.UPDATE,
-                        SignUpUserEntity(
-                            name,
-                            "smgs01",
-                            "gmail.com"
-                        )
-                    )
-                )
-            }
+
         }
     }
     private fun setRandomImg() {

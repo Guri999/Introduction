@@ -12,13 +12,10 @@ enum class SignUpEntryType {
      *
      * 정보를 다시 EntryType으로 전환하자!
      */
-    companion object{
-        fun  getEntryType(
-            ordinal: Int?
-        ): SignUpEntryType {
-            return SignUpEntryType.values().firstOrNull(){
+    companion object {
+        fun getEntryType(ordinal: Int?): SignUpEntryType =
+            SignUpEntryType.values().firstOrNull {
                 it.ordinal == ordinal
             } ?: CREATE
-        }
     }
 }

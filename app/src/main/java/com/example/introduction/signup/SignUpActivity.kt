@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -13,37 +12,27 @@ import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.introduction.R
 import com.example.introduction.databinding.ActivitySignUpBinding
-import kotlin.text.StringBuilder
+import com.example.introduction.signup.SignUpEntryType.Companion.getEntryType
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class SignUpActivity : AppCompatActivity() {
-
-    /**
-     * 사용자의 진입상태를 나타내는코드
-     *
-     *
-     */
     companion object {
+
         const val EXTRA_ENTRY_TYPE = "extra_entry_type"
         const val EXTRA_USER_ENTITY = "extra_user_entity"
-        fun newIntent( // 상태를 받기위한 인터페이스 같은것
+
+        fun newIntent(
             context: Context,
             entryType: SignUpEntryType,
-            userEntity: SignUpUserEntity
-        ): Intent = Intent(
-            context,
-            SignUpActivity::class.java
-        ).apply {
-            putExtra(
-                EXTRA_ENTRY_TYPE,
-                entryType.ordinal
-            )//이넘클래스는 풋엑스트라에 못올림, 그래서 타입을 ordinal로 바꿈 (Index값)
-            putExtra(EXTRA_USER_ENTITY, userEntity)
+            entity: SignUpUserEntity
+        ): Intent = Intent(context, SignUpActivity()::class.java).apply {
+            putExtra(EXTRA_ENTRY_TYPE, entryType.ordinal)
+            putExtra(EXTRA_USER_ENTITY, entity)
         }
-
     }
 
     private val emails: Array<String> by lazy {
@@ -64,38 +53,14 @@ class SignUpActivity : AppCompatActivity() {
             binding.etSignupPasschk
         )
 
-    private val userEntity: SignUpUserEntity? by lazy {
-        intent?.getParcelableExtra(
-            EXTRA_USER_ENTITY, SignUpUserEntity::class.java
-        )
-    }
-
-    /**
-     * ordinal로 변환시켰기땜에
-     *
-     * 다시 타입을 변경시켜줄 코드가 필요함
-     */
-    private val entryType: SignUpEntryType by lazy {
-        SignUpEntryType.getEntryType(
-            intent?.getIntExtra(
-                EXTRA_ENTRY_TYPE,
-                SignUpEntryType.CREATE.ordinal
-            )
-        )
-    }
-
     private val viewModel by lazy {
-        ViewModelProvider(this@SignUpActivity).get(SignUpViewModel::class.java)
+        ViewModelProvider(this@SignUpActivity)[SignUpViewModel::class.java]
     }
     private val binding by lazy {
         ActivitySignUpBinding.inflate(layoutInflater)
     }
 
-    /**
-     * 변수 선언 끝!
-     * onCreate
-     */
-
+    private var canSpin = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -112,27 +77,38 @@ class SignUpActivity : AppCompatActivity() {
 
         setOnFocusChangedListener()
 
-        setUserEntity()
+        getEntry()
 
-        setSignUpBtn()
     }
 
     /**
-     * 회원가입 버튼 or 수정하기 버튼
-     * 유저의 엔트리타입에 따라 다르게 나타나게함
+     * 엔트리타입을 받고 뷰모델에 갱신
      */
-    private fun setSignUpBtn() {
-        binding.btSignupBtn.let {
-            it.setText(
-                when (entryType) {
-                    SignUpEntryType.UPDATE -> {
-                        binding.etSignupId.visibility = View.GONE
-                        binding.tvSignupId.visibility = View.GONE
-                        R.string.user_update
-                    }
-                    else -> R.string.sign_up
-                }
+    private fun getEntry() {
+        viewModel.getEntryData(
+            getEntryType(intent.getIntExtra(EXTRA_ENTRY_TYPE, 0)),
+            intent.getParcelableExtra(EXTRA_USER_ENTITY)
             )
+        viewModel.entryType.observe(this, Observer { entry ->
+            setSignUpBtn(entry)
+        })
+    }
+
+    /**
+     * 버튼의 텍스트를 수정하고 UPDATE상태면 전달받은 데이터를 세팅한다
+     */
+    private fun setSignUpBtn(entry: SignUpEntryType) {
+        when (entry) {
+            SignUpEntryType.UPDATE -> {
+                binding.apply {
+                    etSignupId.visibility = View.GONE
+                    tvSignupId.visibility = View.GONE
+                    btSignupBtn.setText(R.string.user_update)
+                }
+                setUserEntity()
+            }
+
+            else -> binding.btSignupBtn.setText(R.string.sign_up)
         }
     }
 
@@ -140,15 +116,16 @@ class SignUpActivity : AppCompatActivity() {
      * 전달 받은 데이터값을 토대로 EditText에 세팅한다
      */
     private fun setUserEntity() = with(viewModel) {
-        setUserEntity(this@SignUpActivity.entryType, this@SignUpActivity.userEntity)
-        binding.apply {
-            userEntity.observe(this@SignUpActivity) {
+        userEntity.observe(this@SignUpActivity) {
+            binding.apply {
                 etSignupName.setText(userEntity.value?.name ?: "")
                 etSignupEid.setText(userEntity.value?.email ?: "")
+                spSignupSpin.setSelection(setServiceIndex(etSignupEservice.text.toString(),emails))
                 etSignupEservice.setText(userEntity.value?.emailService ?: "")
             }
         }
     }
+
 
     private fun setOnFocusChangedListener() {
         editTexts.forEach { editText ->
@@ -170,6 +147,10 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * 뷰 모델에서 위젯의 텍스트를 문자열로 구분해서 넣어주고
+     * 에러메세지에 표시할 문자를 받는다
+     */
     private fun setErrorMessage(editText: EditText) {
         val errorType = when (editText) {
             binding.etSignupName -> "Name"
@@ -182,7 +163,8 @@ class SignUpActivity : AppCompatActivity() {
         val errorCode = viewModel.getErrorMessage(errorType, editText.text.toString())?.message
         editText.error = errorCode?.let { getString(it) }
 
-        binding.tvSignupPassempty.visibility = if (binding.etSignupPass.text.isEmpty()) View.VISIBLE else View.GONE
+        binding.tvSignupPassempty.visibility =
+            if (binding.etSignupPass.text.isEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun setServiceProvider() {
@@ -200,13 +182,16 @@ class SignUpActivity : AppCompatActivity() {
                     position: Int,
                     id: Long
                 ) {
-                    if (viewModel.selectEmail(position, emails)) {
-                        etSignupEservice.setText(emails[position])
-                        etSignupEservice.visibility = View.GONE
-                    } else {
-                        etSignupEservice.setText("")
-                        etSignupEservice.visibility = View.VISIBLE
+                    if (canSpin) {
+                        if (viewModel.selectEmail(position, emails)) {
+                            etSignupEservice.setText(emails[position])
+                            etSignupEservice.visibility = View.GONE
+                        } else {
+                            etSignupEservice.setText("")
+                            etSignupEservice.visibility = View.VISIBLE
+                        }
                     }
+                    canSpin = true
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) = Unit
