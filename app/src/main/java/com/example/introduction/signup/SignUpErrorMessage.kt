@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import com.example.introduction.R
 
 enum class SignUpErrorMessage(
-    @StringRes val message: Int,
+    @StringRes val message: Int?,
 ){
     NAME(R.string.sign_name_error),
     NAMESPECIAL(R.string.name_error_special),

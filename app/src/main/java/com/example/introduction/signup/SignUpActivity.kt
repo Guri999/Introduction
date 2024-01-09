@@ -15,6 +15,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.introduction.R
+import com.example.introduction.UserRepository
 import com.example.introduction.databinding.ActivitySignUpBinding
 import com.example.introduction.signup.SignUpEntryType.Companion.getEntryType
 
@@ -53,8 +54,17 @@ class SignUpActivity : AppCompatActivity() {
             binding.etSignupPasschk
         )
 
+    private val userRepository by lazy {
+        UserRepository()
+    }
+    private val signUpUseCase by lazy {
+        SignUpUseCase()
+    }
     private val viewModel by lazy {
-        ViewModelProvider(this@SignUpActivity)[SignUpViewModel::class.java]
+        ViewModelProvider(
+            this@SignUpActivity,
+            SignUpViewModelFactory(userRepository, signUpUseCase)
+        )[SignUpViewModel::class.java]
     }
     private val binding by lazy {
         ActivitySignUpBinding.inflate(layoutInflater)
@@ -79,6 +89,7 @@ class SignUpActivity : AppCompatActivity() {
 
         getEntry()
 
+        setErrorMessage()
     }
 
     /**
@@ -88,7 +99,7 @@ class SignUpActivity : AppCompatActivity() {
         viewModel.getEntryData(
             getEntryType(intent.getIntExtra(EXTRA_ENTRY_TYPE, 0)),
             intent.getParcelableExtra(EXTRA_USER_ENTITY)
-            )
+        )
         viewModel.entryType.observe(this, Observer { entry ->
             setSignUpBtn(entry)
         })
@@ -120,18 +131,20 @@ class SignUpActivity : AppCompatActivity() {
             binding.apply {
                 etSignupName.setText(userEntity.value?.name ?: "")
                 etSignupEid.setText(userEntity.value?.email ?: "")
-                spSignupSpin.setSelection(setServiceIndex(etSignupEservice.text.toString(),emails))
+                setServiceIndex(etSignupEservice.text.toString(), emails)
                 etSignupEservice.setText(userEntity.value?.emailService ?: "")
+                viewModel.emailPosition.observe(this@SignUpActivity){
+                    spSignupSpin.setSelection(it)
+                }
             }
         }
     }
-
 
     private fun setOnFocusChangedListener() {
         editTexts.forEach { editText ->
             editText.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus.not()) {
-                    setErrorMessage(editText)
+                    handleErrorMessage(editText)
                     setConfirmButtonEnable()
                 }
             }
@@ -141,8 +154,44 @@ class SignUpActivity : AppCompatActivity() {
     private fun setTextChangedListener() {
         editTexts.forEach { editText ->
             editText.addTextChangedListener {
-                setErrorMessage(editText)
+                handleErrorMessage(editText)
                 setConfirmButtonEnable()
+            }
+        }
+    }
+
+    private fun setErrorMessage() {
+        viewModel.nameError.observe(this) { type ->
+            type?.let {
+                binding.etSignupName.error = type.message?.let { getString(it) }
+            }
+        }
+        viewModel.idError.observe(this) { type ->
+            type?.let {
+                binding.etSignupId.error = type.message?.let { getString(it) }
+            }
+        }
+
+        viewModel.emailIdError.observe(this) { type ->
+            type?.let {
+                binding.etSignupEid.error = type.message?.let { getString(it) }
+            }
+        }
+        viewModel.emailError.observe(this) { type ->
+            type?.let {
+                binding.etSignupEservice.error = type.message?.let { getString(it) }
+            }
+        }
+
+        viewModel.passwordError.observe(this) { type ->
+            type?.let {
+                binding.etSignupPass.error = type.message?.let { getString(it) }
+            }
+        }
+
+        viewModel.passwordChkError.observe(this) { type ->
+            type?.let {
+                binding.etSignupPasschk.error = type.message?.let { getString(it) }
             }
         }
     }
@@ -151,17 +200,19 @@ class SignUpActivity : AppCompatActivity() {
      * 뷰 모델에서 위젯의 텍스트를 문자열로 구분해서 넣어주고
      * 에러메세지에 표시할 문자를 받는다
      */
-    private fun setErrorMessage(editText: EditText) {
-        val errorType = when (editText) {
-            binding.etSignupName -> "Name"
-            binding.etSignupId -> "Id"
-            binding.etSignupEid -> "EmailId"
-            binding.etSignupEservice -> "Email"
-            binding.etSignupPass -> "Password"
-            else -> ""
+    private fun handleErrorMessage(editText: EditText) {
+        val errorType: EditType = when (editText) {
+            binding.etSignupName -> EditType.NAME
+            binding.etSignupId -> EditType.ID
+            binding.etSignupEid -> EditType.EMAIL_ID
+            binding.etSignupEservice -> EditType.EMAIL
+            binding.etSignupPass -> EditType.PASSWORD
+            else -> EditType.NONE
         }
-        val errorCode = viewModel.getErrorMessage(errorType, editText.text.toString())?.message
-        editText.error = errorCode?.let { getString(it) }
+        binding.apply {
+            viewModel.checkPassword(etSignupPass.text.toString(), etSignupPasschk.text.toString())
+        }
+        viewModel.getErrorMessage(errorType, editText.text.toString())
 
         binding.tvSignupPassempty.visibility =
             if (binding.etSignupPass.text.isEmpty()) View.VISIBLE else View.GONE
@@ -183,7 +234,7 @@ class SignUpActivity : AppCompatActivity() {
                     id: Long
                 ) {
                     if (canSpin) {
-                        if (viewModel.selectEmail(position, emails)) {
+                        if (position != emails.lastIndex) {
                             etSignupEservice.setText(emails[position])
                             etSignupEservice.visibility = View.GONE
                         } else {

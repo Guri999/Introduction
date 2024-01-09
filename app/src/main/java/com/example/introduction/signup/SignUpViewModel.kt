@@ -1,17 +1,12 @@
 package com.example.introduction.signup
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.introduction.User
-import com.example.introduction.UserList
-import com.example.introduction.signup.SignUpValidExtension.validEmailServiceProvider
-import com.example.introduction.signup.SignUpValidExtension.includeSpecialCharacters
-import com.example.introduction.signup.SignUpValidExtension.includeUpperCase
+import androidx.lifecycle.ViewModel
+import com.example.introduction.UserRepository
 
 
-class SignUpViewModel (application: Application): AndroidViewModel(application) {
+class SignUpViewModel(private val userRepository: UserRepository, private val useCase: SignUpUseCase): ViewModel() {
 
     private val _entryType: MutableLiveData<SignUpEntryType> = MutableLiveData()
     val entryType: LiveData<SignUpEntryType> get() = _entryType
@@ -19,52 +14,42 @@ class SignUpViewModel (application: Application): AndroidViewModel(application) 
     private val _userEntity: MutableLiveData<SignUpUserEntity> = MutableLiveData()
     val userEntity: LiveData<SignUpUserEntity> get() = _userEntity
 
-    fun selectEmail(position: Int,emails: Array<String>): Boolean {
-        return position != emails.lastIndex
-    }
+    private val _nameError: MutableLiveData<SignUpErrorMessage> = MutableLiveData()
+    val nameError: LiveData<SignUpErrorMessage> get() = _nameError
+
+    private val _idError: MutableLiveData<SignUpErrorMessage> = MutableLiveData()
+    val idError: LiveData<SignUpErrorMessage> get() = _idError
+
+    private val _emailIdError: MutableLiveData<SignUpErrorMessage> = MutableLiveData()
+    val emailIdError: LiveData<SignUpErrorMessage> get() = _emailIdError
+    private val _emailError: MutableLiveData<SignUpErrorMessage> = MutableLiveData()
+    val emailError: LiveData<SignUpErrorMessage> get() = _emailError
+
+    private val _passwordError: MutableLiveData<SignUpErrorMessage> = MutableLiveData()
+    val passwordError: LiveData<SignUpErrorMessage> get() = _passwordError
+
+    private val _passwordChkError: MutableLiveData<SignUpErrorMessage> = MutableLiveData()
+    val passwordChkError: LiveData<SignUpErrorMessage> get() = _passwordChkError
+
+    private val _emailPosition: MutableLiveData<Int> = MutableLiveData()
+    val emailPosition: LiveData<Int> get() = _emailPosition
 
 
+
+    /**
+     * UserList조작 하는 부분은 Repository를 추가하는게 좋을듯
+     * */
     fun sendData(name: String, id: String, emailId: String, emailService: String, password: String, idVisible: Boolean) {
-        val email = "$emailId@$emailService"
-
-        if (!idVisible) {
-            UserList.userList.find { it.id == id }?.let {
-                it.name = name
-                it.password = password
-                it.email = email
-            }
-        } else {
-            val newUser = User(name, id, password, email)
-            UserList.userList.add(newUser)
-        }
+        userRepository.sendData(name, id, emailId, emailService, password, idVisible)
     }
 
-    fun getErrorMessage(type: String, text: String): SignUpErrorMessage? {
-        if (text.isEmpty()) return when (type) {
-            "Name" -> SignUpErrorMessage.NAME
-            "Id", "EmailId" -> SignUpErrorMessage.ID
-            "Email" -> SignUpErrorMessage.EMAIL
-            "Password" -> SignUpErrorMessage.PASSWORDLEGTH
-            else -> null
-        }
-        if (type == "Name" && text.includeSpecialCharacters()) return SignUpErrorMessage.NAMESPECIAL
-
-        if (type == "Id" || type == "EmailId" && text.includeSpecialCharacters())
-            return SignUpErrorMessage.IDSPECIAL
-
-        return when (type) {
-            "Id" -> when {
-                text.length !in 2..8 -> SignUpErrorMessage.IDLEGTH
-                UserList.userList.any { it.id == text } -> SignUpErrorMessage.IDUSE
-                else -> null
-            }
-            "Email" -> if (!text.validEmailServiceProvider()) SignUpErrorMessage.EMAILSPECIAL else null
-            "Password" -> when {
-                text.length !in 10..16 -> SignUpErrorMessage.PASSWORDLEGTH
-                !text.includeSpecialCharacters() -> SignUpErrorMessage.PASSWORDSPECIAL
-                !text.includeUpperCase() -> SignUpErrorMessage.UPPERONE
-                else -> null
-            }
+    fun getErrorMessage(type: EditType, text: String) {
+        when (type) {
+            EditType.NAME -> _nameError.value = useCase.setError(type, text)
+            EditType.ID -> _idError.value = useCase.setError(type,text)
+            EditType.EMAIL_ID -> _emailIdError.value = useCase.setError(type, text)
+            EditType.EMAIL -> _emailError.value = useCase.setError(type,text)
+            EditType.PASSWORD -> _passwordError.value = useCase.setError(type,text)
             else -> null
         }
     }
@@ -74,9 +59,16 @@ class SignUpViewModel (application: Application): AndroidViewModel(application) 
         _userEntity.value = userEntity
     }
 
-    fun setServiceIndex(service: String?, emails: Array<String>): Int {
-        return if (emails.any{ it == service}) {
-            emails.indexOf(emails.find { it == service })
-        }else emails.lastIndex
+    fun setServiceIndex(service: String?, emails: Array<String>) {
+        _emailPosition.value = useCase.setServiceIndex(service, emails)
     }
+
+    fun checkPassword(password: String, confirm: String) {
+        _passwordChkError.value = useCase.checkPassword(password, confirm)
+    }
+
+}
+
+enum class EditType {
+    NAME, ID, EMAIL_ID, EMAIL, PASSWORD, PASSWORD_CHECK, NONE
 }
