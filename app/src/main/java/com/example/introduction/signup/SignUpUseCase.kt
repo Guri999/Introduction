@@ -7,8 +7,8 @@ import com.example.introduction.signup.SignUpValidExtension.includeSpecialCharac
 import com.example.introduction.signup.SignUpValidExtension.includeUpperCase
 import com.example.introduction.signup.SignUpValidExtension.validEmailServiceProvider
 
-class SignUpUseCase(private val userRepository: UserRepository) {
-    fun setError(type: EditType, text: String): SignUpErrorMessage? {
+class UseCaseErrorMessage {
+    operator fun invoke(type: EditType, text: String): SignUpErrorMessage? {
         val error: SignUpErrorMessage? = when {
             text.isEmpty() -> when (type) {
                 EditType.NAME -> SignUpErrorMessage.NAME
@@ -17,14 +17,20 @@ class SignUpUseCase(private val userRepository: UserRepository) {
                 EditType.PASSWORD -> SignUpErrorMessage.PASSWORDLEGTH
                 else -> null
             }
+
             type == EditType.NAME && text.includeSpecialCharacters() -> SignUpErrorMessage.NAMESPECIAL
-            type in listOf(EditType.ID, EditType.EMAIL_ID) && text.includeSpecialCharacters() -> SignUpErrorMessage.IDSPECIAL
+            type in listOf(
+                EditType.ID,
+                EditType.EMAIL_ID
+            ) && text.includeSpecialCharacters() -> SignUpErrorMessage.IDSPECIAL
+
             else -> when (type) {
                 EditType.ID -> when {
                     text.length !in 2..8 -> SignUpErrorMessage.IDLEGTH
                     UserList.userList.any { it.id == text } -> SignUpErrorMessage.IDUSE
                     else -> null
                 }
+
                 EditType.EMAIL -> if (!text.validEmailServiceProvider()) SignUpErrorMessage.EMAILSPECIAL else null
                 EditType.PASSWORD -> when {
                     text.length !in 10..16 -> SignUpErrorMessage.PASSWORDLEGTH
@@ -32,24 +38,31 @@ class SignUpUseCase(private val userRepository: UserRepository) {
                     !text.includeUpperCase() -> SignUpErrorMessage.UPPERONE
                     else -> null
                 }
+
                 else -> null
             }
         }
         return error
     }
+}
 
-    fun setServiceIndex(service: String?, emails: Array<String>): Int {
-        return if (emails.any{ it == service}) {
+class UseCaseServiceIndex{
+    operator fun invoke(service: String?, emails: Array<String>): Int {
+        return if (emails.any { it == service }) {
             emails.indexOf(emails.find { it == service })
-        }else emails.lastIndex
+        } else emails.lastIndex
     }
+}
 
-    fun checkPassword(password: String, confirmPassword: String): SignUpErrorMessage? {
+class CheckPassword {
+    operator fun invoke(password: String, confirmPassword: String): SignUpErrorMessage? {
         return if (password == confirmPassword) null
         else SignUpErrorMessage.PASSWORDNOCOINCIDE
     }
+}
 
-    fun saveUser(name: String, id: String, emailId: String, emailService: String, password: String, idVisible: Boolean) {
+class SaveUser(private val userRepository: UserRepository) {
+    operator fun invoke(name: String, id: String, emailId: String, emailService: String, password: String, idVisible: Boolean) {
         val email = "$emailId@$emailService"
 
         if (!idVisible) {

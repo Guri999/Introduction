@@ -4,9 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.introduction.UserRepository
-
-
-class SignUpViewModel(private val useCase: SignUpUseCase): ViewModel() {
+class SignUpViewModel constructor(
+    private val errorMessage: UseCaseErrorMessage,
+    private val emailIndex: UseCaseServiceIndex,
+    private val passwordCheck: CheckPassword,
+    private val saveUser: SaveUser
+): ViewModel() {
 
     private val _entryType: MutableLiveData<SignUpEntryType> = MutableLiveData()
     val entryType: LiveData<SignUpEntryType> get() = _entryType
@@ -34,7 +37,7 @@ class SignUpViewModel(private val useCase: SignUpUseCase): ViewModel() {
      * 그후 Repository로 넘겨주고 값을 저장한다
     */
     fun sendData(name: String, id: String, emailId: String, emailService: String, password: String, idVisible: Boolean) {
-        useCase.saveUser(name, id, emailId, emailService, password, idVisible)
+        saveUser(name, id, emailId, emailService, password, idVisible)
     }
 
     /**
@@ -45,7 +48,7 @@ class SignUpViewModel(private val useCase: SignUpUseCase): ViewModel() {
      * 메인 액티비티에선 각 타입에 맞춰 EditText에 에러메시지 출력
      */
     fun getErrorMessage(type: EditType, text: String) {
-        _errors[type]?.value = useCase.setError(type, text)
+        _errors[type]?.value = errorMessage(type, text)
     }
 
     /**
@@ -63,7 +66,7 @@ class SignUpViewModel(private val useCase: SignUpUseCase): ViewModel() {
      * 위치값을 갱신한다
      */
     fun setServiceIndex(service: String?, emails: Array<String>) {
-        _emailPosition.value = useCase.setServiceIndex(service, emails)
+        _emailPosition.value = emailIndex(service, emails)
     }
 
     /**
@@ -72,7 +75,7 @@ class SignUpViewModel(private val useCase: SignUpUseCase): ViewModel() {
      * 비밀번호가 중복하는지 검사 useCase에서 체크한다
      */
     fun checkPassword(password: String, confirm: String) {
-        _errors[EditType.PASSWORD_CHECK]?.value = useCase.checkPassword(password, confirm)
+        _errors[EditType.PASSWORD_CHECK]?.value = passwordCheck(password, confirm)
     }
 
 }

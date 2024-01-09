@@ -14,10 +14,12 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.introduction.R
 import com.example.introduction.UserRepository
 import com.example.introduction.databinding.ActivitySignUpBinding
 import com.example.introduction.signup.SignUpEntryType.Companion.getEntryType
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class SignUpActivity : AppCompatActivity() {
@@ -54,17 +56,24 @@ class SignUpActivity : AppCompatActivity() {
             binding.etSignupPasschk
         )
 
+    private val useCaseError by lazy {
+        UseCaseErrorMessage()
+    }
+    private val UseCaseServiceIndex by lazy {
+        UseCaseServiceIndex()
+    }
+    private val CheckPassword by lazy {
+        CheckPassword()
+    }
+    private val SaveUser by lazy {
+        SaveUser(userRepository)
+    }
     private val userRepository by lazy {
         UserRepository()
     }
-    private val signUpUseCase by lazy {
-        SignUpUseCase(userRepository)
-    }
+
     private val viewModel by lazy {
-        ViewModelProvider(
-            this@SignUpActivity,
-            SignUpViewModelFactory(signUpUseCase)
-        )[SignUpViewModel::class.java]
+        ViewModelProvider(this@SignUpActivity, SignUpViewModelFactory(useCaseError,UseCaseServiceIndex,CheckPassword,SaveUser))[SignUpViewModel::class.java]
     }
     private val binding by lazy {
         ActivitySignUpBinding.inflate(layoutInflater)
@@ -131,7 +140,7 @@ class SignUpActivity : AppCompatActivity() {
             binding.apply {
                 etSignupName.setText(userEntity.value?.name ?: "")
                 etSignupEid.setText(userEntity.value?.email ?: "")
-                setServiceIndex(etSignupEservice.text.toString(), emails)
+                    setServiceIndex(etSignupEservice.text.toString(), emails)
                 etSignupEservice.setText(userEntity.value?.emailService ?: "")
                 viewModel.emailPosition.observe(this@SignUpActivity){
                     spSignupSpin.setSelection(it)
@@ -195,9 +204,8 @@ class SignUpActivity : AppCompatActivity() {
         }
         binding.apply {
             viewModel.checkPassword(etSignupPass.text.toString(), etSignupPasschk.text.toString())
-        }
         viewModel.getErrorMessage(errorType, editText.text.toString())
-
+        }
         binding.tvSignupPassempty.visibility =
             if (binding.etSignupPass.text.isEmpty()) View.VISIBLE else View.GONE
     }
@@ -249,9 +257,7 @@ class SignUpActivity : AppCompatActivity() {
             val emailService = binding.etSignupEservice.text.toString()
             val password = binding.etSignupPass.text.toString()
             val isIdVisible = binding.etSignupId.isVisible
-
-            viewModel.sendData(name, id, emailId, emailService, password, isIdVisible)
-
+                viewModel.sendData(name, id, emailId, emailService, password, isIdVisible)
             val sendData = intent.apply {
                 putExtra("id", id)
                 putExtra("password", password)
