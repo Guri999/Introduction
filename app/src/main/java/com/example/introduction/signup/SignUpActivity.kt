@@ -161,39 +161,23 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setErrorMessage() {
-        viewModel.nameError.observe(this) { type ->
-            type?.let {
-                binding.etSignupName.error = type.message?.let { getString(it) }
-            }
-        }
-        viewModel.idError.observe(this) { type ->
-            type?.let {
-                binding.etSignupId.error = type.message?.let { getString(it) }
-            }
-        }
-
-        viewModel.emailIdError.observe(this) { type ->
-            type?.let {
-                binding.etSignupEid.error = type.message?.let { getString(it) }
-            }
-        }
-        viewModel.emailError.observe(this) { type ->
-            type?.let {
-                binding.etSignupEservice.error = type.message?.let { getString(it) }
+        EditType.values().forEach { type ->
+            viewModel.errors[type]?.observe(this) { error ->
+                error?.let {
+                    val errorString = error.message?.let { getString(it) }
+                    when (type) {
+                        EditType.NAME -> binding.etSignupName.error = errorString
+                        EditType.ID -> binding.etSignupId.error = errorString
+                        EditType.EMAIL_ID -> binding.etSignupEid.error = errorString
+                        EditType.EMAIL -> binding.etSignupEservice.error = errorString
+                        EditType.PASSWORD -> binding.etSignupPass.error = errorString
+                        EditType.PASSWORD_CHECK -> binding.etSignupPasschk.error = errorString
+                        else -> null
+                    }
+                }
             }
         }
 
-        viewModel.passwordError.observe(this) { type ->
-            type?.let {
-                binding.etSignupPass.error = type.message?.let { getString(it) }
-            }
-        }
-
-        viewModel.passwordChkError.observe(this) { type ->
-            type?.let {
-                binding.etSignupPasschk.error = type.message?.let { getString(it) }
-            }
-        }
     }
 
     /**

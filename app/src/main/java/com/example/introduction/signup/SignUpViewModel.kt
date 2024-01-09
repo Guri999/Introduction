@@ -14,27 +14,18 @@ class SignUpViewModel(private val userRepository: UserRepository, private val us
     private val _userEntity: MutableLiveData<SignUpUserEntity> = MutableLiveData()
     val userEntity: LiveData<SignUpUserEntity> get() = _userEntity
 
-    private val _nameError: MutableLiveData<SignUpErrorMessage> = MutableLiveData()
-    val nameError: LiveData<SignUpErrorMessage> get() = _nameError
-
-    private val _idError: MutableLiveData<SignUpErrorMessage> = MutableLiveData()
-    val idError: LiveData<SignUpErrorMessage> get() = _idError
-
-    private val _emailIdError: MutableLiveData<SignUpErrorMessage> = MutableLiveData()
-    val emailIdError: LiveData<SignUpErrorMessage> get() = _emailIdError
-    private val _emailError: MutableLiveData<SignUpErrorMessage> = MutableLiveData()
-    val emailError: LiveData<SignUpErrorMessage> get() = _emailError
-
-    private val _passwordError: MutableLiveData<SignUpErrorMessage> = MutableLiveData()
-    val passwordError: LiveData<SignUpErrorMessage> get() = _passwordError
-
-    private val _passwordChkError: MutableLiveData<SignUpErrorMessage> = MutableLiveData()
-    val passwordChkError: LiveData<SignUpErrorMessage> get() = _passwordChkError
-
     private val _emailPosition: MutableLiveData<Int> = MutableLiveData()
     val emailPosition: LiveData<Int> get() = _emailPosition
 
-
+    private val _errors: MutableMap<EditType, MutableLiveData<SignUpErrorMessage>> = mutableMapOf(
+        EditType.NAME to MutableLiveData(),
+        EditType.ID to MutableLiveData(),
+        EditType.EMAIL_ID to MutableLiveData(),
+        EditType.EMAIL to MutableLiveData(),
+        EditType.PASSWORD to MutableLiveData(),
+        EditType.PASSWORD_CHECK to MutableLiveData()
+    )
+    val errors: Map<EditType, LiveData<SignUpErrorMessage>> get() = _errors
 
     /**
      * UserList조작 하는 부분은 Repository를 추가하는게 좋을듯
@@ -44,14 +35,7 @@ class SignUpViewModel(private val userRepository: UserRepository, private val us
     }
 
     fun getErrorMessage(type: EditType, text: String) {
-        when (type) {
-            EditType.NAME -> _nameError.value = useCase.setError(type, text)
-            EditType.ID -> _idError.value = useCase.setError(type,text)
-            EditType.EMAIL_ID -> _emailIdError.value = useCase.setError(type, text)
-            EditType.EMAIL -> _emailError.value = useCase.setError(type,text)
-            EditType.PASSWORD -> _passwordError.value = useCase.setError(type,text)
-            else -> null
-        }
+        _errors[type]?.value = useCase.setError(type, text)
     }
 
     fun getEntryData(entryType: SignUpEntryType, userEntity: SignUpUserEntity?){
@@ -64,7 +48,7 @@ class SignUpViewModel(private val userRepository: UserRepository, private val us
     }
 
     fun checkPassword(password: String, confirm: String) {
-        _passwordChkError.value = useCase.checkPassword(password, confirm)
+        _errors[EditType.PASSWORD_CHECK]?.value = useCase.checkPassword(password, confirm)
     }
 
 }
