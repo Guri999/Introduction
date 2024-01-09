@@ -58,12 +58,12 @@ class SignUpActivity : AppCompatActivity() {
         UserRepository()
     }
     private val signUpUseCase by lazy {
-        SignUpUseCase()
+        SignUpUseCase(userRepository)
     }
     private val viewModel by lazy {
         ViewModelProvider(
             this@SignUpActivity,
-            SignUpViewModelFactory(userRepository, signUpUseCase)
+            SignUpViewModelFactory(signUpUseCase)
         )[SignUpViewModel::class.java]
     }
     private val binding by lazy {

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.introduction.UserRepository
 
 
-class SignUpViewModel(private val userRepository: UserRepository, private val useCase: SignUpUseCase): ViewModel() {
+class SignUpViewModel(private val useCase: SignUpUseCase): ViewModel() {
 
     private val _entryType: MutableLiveData<SignUpEntryType> = MutableLiveData()
     val entryType: LiveData<SignUpEntryType> get() = _entryType
@@ -27,11 +27,8 @@ class SignUpViewModel(private val userRepository: UserRepository, private val us
     )
     val errors: Map<EditType, LiveData<SignUpErrorMessage>> get() = _errors
 
-    /**
-     * UserList조작 하는 부분은 Repository를 추가하는게 좋을듯
-     * */
     fun sendData(name: String, id: String, emailId: String, emailService: String, password: String, idVisible: Boolean) {
-        userRepository.sendData(name, id, emailId, emailService, password, idVisible)
+        useCase.saveUser(name, id, emailId, emailService, password, idVisible)
     }
 
     fun getErrorMessage(type: EditType, text: String) {

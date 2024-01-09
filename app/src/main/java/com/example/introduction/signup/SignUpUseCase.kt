@@ -1,11 +1,13 @@
 package com.example.introduction.signup
 
+import com.example.introduction.User
 import com.example.introduction.UserList
+import com.example.introduction.UserRepository
 import com.example.introduction.signup.SignUpValidExtension.includeSpecialCharacters
 import com.example.introduction.signup.SignUpValidExtension.includeUpperCase
 import com.example.introduction.signup.SignUpValidExtension.validEmailServiceProvider
 
-class SignUpUseCase {
+class SignUpUseCase(private val userRepository: UserRepository) {
     fun setError(type: EditType, text: String): SignUpErrorMessage? {
         val error: SignUpErrorMessage? = when {
             text.isEmpty() -> when (type) {
@@ -45,5 +47,22 @@ class SignUpUseCase {
     fun checkPassword(password: String, confirmPassword: String): SignUpErrorMessage? {
         return if (password == confirmPassword) null
         else SignUpErrorMessage.PASSWORDNOCOINCIDE
+    }
+
+    fun saveUser(name: String, id: String, emailId: String, emailService: String, password: String, idVisible: Boolean) {
+        val email = "$emailId@$emailService"
+
+        if (!idVisible) {
+            val user = userRepository.findUserById(id)
+            user?.let {
+                it.name = name
+                it.password = password
+                it.email = email
+                userRepository.updateUser(it)
+            }
+        } else {
+            val newUser = User(name, id, password, email)
+            userRepository.saveUser(newUser)
+        }
     }
 }

@@ -3,18 +3,22 @@ package com.example.introduction
 class UserRepository {
     var userList = ArrayList<User>()
 
-    fun sendData(name: String, id: String, emailId: String, emailService: String, password: String, idVisible: Boolean) {
-        val email = "$emailId@$emailService"
+    fun loadUser(userData: ArrayList<User>) {
+        userList = userData
+    }
 
-        if (!idVisible) {
-            UserList.userList.find { it.id == id }?.let {
-                it.name = name
-                it.password = password
-                it.email = email
-            }
-        } else {
-            val newUser = User(name, id, password, email)
-            UserList.userList.add(newUser)
+    fun findUserById(id: String): User? {
+        return userList.find { it.id == id }
+    }
+    fun updateUser(user: User) {
+        userList.find { it.id == user.id }?.let {
+            it.name = user.name
+            it.password = user.password
+            it.email = user.email
         }
+    }
+
+    fun saveUser(newUser: User) {
+        userList.add(newUser)
     }
 }

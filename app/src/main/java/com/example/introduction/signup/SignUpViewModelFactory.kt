@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.introduction.UserRepository
 import java.lang.IllegalArgumentException
 
-class SignUpViewModelFactory(private val userRepository: UserRepository, private val useCase: SignUpUseCase) : ViewModelProvider.Factory{
+class SignUpViewModelFactory(private val useCase: SignUpUseCase) : ViewModelProvider.Factory{
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return SignUpViewModel(userRepository, useCase) as T
+        return SignUpViewModel(useCase) as T
 
         throw IllegalArgumentException("unKnown ViewModel class")
     }
