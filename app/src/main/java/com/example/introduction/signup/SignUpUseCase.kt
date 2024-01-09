@@ -1,6 +1,7 @@
 package com.example.introduction.signup
 
 import com.example.introduction.User
+import com.example.introduction.UserData
 import com.example.introduction.UserList
 import com.example.introduction.UserRepository
 import com.example.introduction.signup.SignUpValidExtension.includeSpecialCharacters
@@ -78,10 +79,10 @@ class CheckPassword {
 /**
  * TODO 신규 사용자 데이터 레포지토리에 저장
  */
-class SaveUser(private val userRepository: UserRepository) {
+class SaveUser {
     operator fun invoke(name: String, id: String, emailId: String, emailService: String, password: String, idVisible: Boolean) {
         val email = "$emailId@$emailService"
-
+        val userRepository = UserRepository()
         if (!idVisible) {
             val user = userRepository.findUserById(id)
             user?.let {

@@ -19,7 +19,10 @@ class SignUpViewModel constructor(
 
     private val _emailPosition: MutableLiveData<Int> = MutableLiveData()
     val emailPosition: LiveData<Int> get() = _emailPosition
-    //실드클래스에서 처리함
+    //실드클래스에서 처리함 <- 코드 안정성이 늘어나지만 코드가 좀 복잡해지는것같다, 내가 제대로 한게 아닌가?
+    //errors로 묶어놨는데 실드클래스를 사용하면 when으로 다시 펼쳐야 할듯함
+    //Activity에서도 EditType을 썻는데 sealed는 같은 파일 내에서만 상속이 가능,,, 어떻게 해결해야할까?
+    //파일을 새로만들고 임포트하면 해결할 수 있는듯 했으나 라이브데이터 초기화에서 문제가 생김,,
     private val _errors: MutableMap<EditType, MutableLiveData<SignUpErrorMessage>> = mutableMapOf(
         EditType.NAME to MutableLiveData(),
         EditType.ID to MutableLiveData(),

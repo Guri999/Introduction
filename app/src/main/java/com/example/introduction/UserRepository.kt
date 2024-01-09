@@ -6,6 +6,7 @@ package com.example.introduction
  * 사용자는 함수의 복잡한 로직을 알 필요 없이 함수만 보고 사용가능하다
  */
 interface UserData {
+
     // 모든 유저 데이터 갱신
     fun loadUser(userData: ArrayList<User>)
     // 유저데이터에서 입력받은 id로 유저를 찾아냄
